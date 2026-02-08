@@ -20,25 +20,11 @@
 
         .cursive { font-family: 'Dancing Script', cursive; }
         
-        /* Main Container for all pages */
-        .page-container {
-            position: relative;
-            z-index: 10;
-        }
+        .page-container { position: relative; z-index: 10; }
 
-        .page { 
-            display: none; 
-            height: 100vh; 
-            width: 100vw; 
-            transition: all 0.5s ease; 
-        }
+        .page { display: none; height: 100vh; width: 100vw; transition: all 0.5s ease; }
         
-        .page.active { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-        }
+        .page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .glass-card { 
             background: rgba(255, 255, 255, 0.08); 
@@ -53,20 +39,14 @@
             -webkit-text-fill-color: transparent; 
         }
 
-        /* Animated Background Layer */
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
         }
 
         .floating-emoji {
-            position: absolute;
-            bottom: -50px;
+            position: absolute; bottom: -50px;
             will-change: transform;
             animation: floatUp linear infinite;
         }
@@ -78,12 +58,14 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        .btn-glow {
-            box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
-        }
+        .btn-glow { box-shadow: 0 0 20px rgba(255, 77, 109, 0.4); }
     </style>
 </head>
 <body>
+
+    <audio id="bgMusic" loop>
+        <source src="./song.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="bg-canvas"></div>
 
@@ -92,7 +74,7 @@
             <div class="animate__animated animate__zoomIn text-center">
                 <h1 class="text-5xl cursive mb-4">Hello, <span class="gradient-text">Billo</span>.</h1>
                 <p class="text-gray-400 tracking-widest uppercase text-xs mb-8">Special Delivery for Nick</p>
-                <button onclick="nav(2)" class="btn-glow px-10 py-3 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white transition-all">
+                <button onclick="startExperience()" class="btn-glow px-10 py-3 rounded-full border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white transition-all">
                     Open Message
                 </button>
             </div>
@@ -115,7 +97,7 @@
                         <div><h3 class="font-bold">Billo</h3><p class="text-xs text-gray-400">Sweet, sassy, and all mine.</p></div>
                     </div>
                 </div>
-                <button onclick="nav(3)" class="mt-8 text-pink-400 flex items-center gap-2 hover:translate-x-2 transition-transform">Next Chapter <span>→</span></button>
+                <button onclick="nav(3)" class="mt-8 text-pink-400 flex items-center gap-2">Next Chapter <span>→</span></button>
             </div>
         </div>
 
@@ -135,20 +117,22 @@
                 <div class="relative pl-8">
                     <div class="absolute -left-[9px] top-1 w-4 h-4 bg-pink-500 rounded-full btn-glow"></div>
                     <p class="text-pink-400 font-bold">The Now</p>
-                    <p class="text-sm text-gray-300">Making beautiful moments. My heart is loading with ur momemts.</p>
+                    <p class="text-sm text-gray-300">Making beautiful moments. My heart is loading with ur moments.</p>
                 </div>
             </div>
-            <button onclick="nav(4)" class="mt-12 bg-pink-600 px-10 py-3 rounded-full animate__animated animate__pulse animate__infinite shadow-lg">The Question</button>
+            <button onclick="nav(4)" class="mt-12 bg-pink-600 px-10 py-3 rounded-full animate__animated animate__pulse animate__infinite">The Question</button>
         </div>
 
         <div id="page4" class="page px-6 text-center">
             <div class="glass-card p-10 w-full max-w-sm animate__animated animate__heartBeat">
                 <h1 class="cursive text-5xl mb-6">Nick...</h1>
-                <p class="text-lg leading-relaxed mb-8">
+                <p class="text-md leading-relaxed mb-6">
                     I’m not here to ask for a ring or a title. I’m just here to ask if I can stay by your side, 
-                    keep calling you <span class="text-pink-400">Baccha</span>, and be the one who makes you smile every day.
+                    keep calling you <span class="text-pink-400 font-bold">Baccha</span>, and be the one who makes you smile every day.
                 </p>
-                <h2 class="text-xl font-bold text-pink-500 mb-8 uppercase tracking-widest">I don't just want to see the world; I want to see it with you. Will you be my partner in every new adventure?</h2>
+                <h2 class="text-lg font-bold text-pink-500 mb-8 uppercase tracking-widest leading-tight">
+                    I don't just want to see the world; I want to see it with you. Will you be my partner in every new adventure?
+                </h2>
                 
                 <div class="flex flex-col gap-4">
                     <button onclick="celebrate()" class="bg-pink-500 py-4 rounded-xl font-bold text-xl shadow-lg hover:bg-pink-400 transition-colors">YES!</button>
@@ -159,48 +143,41 @@
     </div>
 
     <script>
-        // BACKGROUND ANIMATION ENGINE
         const bgContainer = document.getElementById('bg-canvas');
         const emojiSet = ['❤️', '💖', '🧸', '✨', '🌸', '🐱'];
+        const music = document.getElementById('bgMusic');
         
+        // Start Music and Nav to Page 2
+        function startExperience() {
+            music.play().catch(e => console.log("Playback failed until interaction"));
+            nav(2);
+        }
+
         function createFloatingEmoji() {
             const emoji = document.createElement('div');
             emoji.className = 'floating-emoji';
             emoji.innerText = emojiSet[Math.floor(Math.random() * emojiSet.length)];
-            
             const size = Math.random() * (30 - 15) + 15;
             const left = Math.random() * 100;
             const duration = Math.random() * (15 - 8) + 8;
             const delay = Math.random() * 5;
-            
             emoji.style.fontSize = `${size}px`;
             emoji.style.left = `${left}%`;
             emoji.style.animationDuration = `${duration}s`;
             emoji.style.animationDelay = `${delay}s`;
-            
             bgContainer.appendChild(emoji);
-            
-            // Remove after animation to save memory
-            setTimeout(() => {
-                emoji.remove();
-            }, (duration + delay) * 1000);
+            setTimeout(() => { emoji.remove(); }, (duration + delay) * 1000);
         }
 
-        // Fill background initially
-        for(let i=0; i < 20; i++) {
-            createFloatingEmoji();
-        }
-        // Continuously add new ones
+        for(let i=0; i < 20; i++) { createFloatingEmoji(); }
         setInterval(createFloatingEmoji, 800);
 
-        // NAVIGATION
         function nav(pageNumber) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active', 'animate__fadeIn'));
             const next = document.getElementById('page' + pageNumber);
             next.classList.add('active', 'animate__animated', 'animate__fadeIn');
         }
 
-        // NO BUTTON LOGIC
         function moveNo() {
             const btn = document.getElementById('noBtn');
             const x = Math.random() * (window.innerWidth - 100);
@@ -210,10 +187,8 @@
             btn.style.top = y + 'px';
         }
 
-        // FINAL CELEBRATION
         function celebrate() {
             alert("Yay! ❤️ See you soon, Nick!");
-            // Burst 100 hearts
             for(let i=0; i<100; i++) {
                 setTimeout(() => {
                     const h = document.createElement('div');
@@ -225,12 +200,10 @@
                     h.style.transition = 'all 2.5s ease-out';
                     h.style.zIndex = '9999';
                     document.body.appendChild(h);
-                    
                     setTimeout(() => {
                         h.style.transform = `translateY(-120vh) rotate(${Math.random() * 360}deg)`;
                         h.style.opacity = '0';
                     }, 50);
-                    
                     setTimeout(() => h.remove(), 2500);
                 }, i * 30);
             }
